@@ -10,30 +10,45 @@ import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 
 const form = document.querySelector('.form');
-hideLoader()
+hideLoader();
 
 form.addEventListener('submit', handlerGallery);
 
 function handlerGallery(event) {
   event.preventDefault();
   const searchText = event.target.elements['search-text'].value.trim();
+  if (searchText === "") {
+    alertMessege(`field is empty`)
+    event.target.reset()
+    return
+  }
+
   showLoader();
   clearGallery();
 
   getImagesByQuery(searchText)
     .then(data => {
       if (data.length <= 0) {
-        iziToast.error({
-          message: `Sorry, there are no images matching your search query. Please try again!`,
-          position: "topLeft"
-        });
-        return
+        alertMessege(
+          `Sorry, there are no images matching your search query. Please try again!`
+        );
+        return;
       }
       createGallery(data);
     })
-    .catch(error => console.log(error))
+    .catch(error => {
+      console.log(error);
+      alertMessege(error.message);
+    })
     .finally(() => {
       hideLoader();
       event.target.reset();
     });
+}
+
+function alertMessege(message) {
+  iziToast.error({
+    message: message,
+    position: 'topLeft',
+  });
 }
