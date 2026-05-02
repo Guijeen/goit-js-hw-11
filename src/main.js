@@ -14,6 +14,7 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 import 'izitoast/dist/css/iziToast.min.css';
 
 const form = document.querySelector('.form');
+hideLoader()
 
 form.addEventListener('submit', handlerGallery);
 
