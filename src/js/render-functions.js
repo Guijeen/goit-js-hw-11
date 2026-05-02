@@ -1,13 +1,25 @@
-
-
-export { createGallery, clearGallery, showLoader,hideLoader };
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const galleryList = document.querySelector('.gallery');
+let galleryViewer = new SimpleLightbox('.gallery-card a', {
+  captionsData: 'alt',
+  captionDelay: 250,
+});
 
 function createGallery(images) {
   galleryList.innerHTML = images
-    .map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
-      return `<li class="gallery-card">
+    .map(
+      ({
+        webformatURL,
+        largeImageURL,
+        tags,
+        likes,
+        views,
+        comments,
+        downloads,
+      }) => {
+        return `<li class="gallery-card">
         <a href=${largeImageURL}>
             <img class="gallery-image" src=${webformatURL} alt=${tags} width="360"/>
         </a>
@@ -26,23 +38,25 @@ function createGallery(images) {
             </li>
         </ul>
         </li>`;
-    })
+      }
+    )
     .join('');
 
+  galleryViewer.refresh();
 }
 
 function clearGallery() {
   galleryList.innerHTML = '';
 }
 
-const loader = document.querySelector("#loader")
+const loader = document.querySelector('#loader');
 
-
-function showLoader(){
-    loader.classList.add("loader")
+function showLoader() {
+  loader.classList.add('loader');
 }
 
-function hideLoader(){
-    loader.classList.remove("loader")
+function hideLoader() {
+  loader.classList.remove('loader');
 }
 
+export { createGallery, clearGallery, showLoader, hideLoader };

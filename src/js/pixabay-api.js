@@ -11,5 +11,10 @@ export default function getImagesByQuery(query) {
 
   axios.defaults.baseURL = `https://pixabay.com/api/`;
 
-  return axios.get(``, { params });
+  return axios.get(``, { params })
+  .then(response => {
+    return  response.data.hits
+  })
+  .catch(error => console.log(error.message)
+  );
 }

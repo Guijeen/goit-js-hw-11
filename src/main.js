@@ -6,11 +6,7 @@ import {
   hideLoader,
 } from './js/render-functions';
 
-// Описаний у документації
-import SimpleLightbox from 'simplelightbox';
 import iziToast from 'izitoast';
-// Додатковий імпорт стилів
-import 'simplelightbox/dist/simple-lightbox.min.css';
 import 'izitoast/dist/css/iziToast.min.css';
 
 const form = document.querySelector('.form');
@@ -25,18 +21,15 @@ function handlerGallery(event) {
   clearGallery();
 
   getImagesByQuery(searchText)
-    .then(response => {
-      if (response.data.hits.length <= 0) {
+    .then(data => {
+      if (data.length <= 0) {
         iziToast.error({
           message: `Sorry, there are no images matching your search query. Please try again!`,
           position: "topLeft"
         });
+        return
       }
-      createGallery(response.data.hits);
-      let galleryViewer = new SimpleLightbox('.gallery-card a', {
-        captionsData: 'alt',
-        captionDelay: 250,
-      });
+      createGallery(data);
     })
     .catch(error => console.log(error))
     .finally(() => {
