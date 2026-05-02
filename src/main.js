@@ -17,15 +17,16 @@ form.addEventListener('submit', handlerGallery);
 function handlerGallery(event) {
   event.preventDefault();
   const searchText = event.target.elements['search-text'].value.trim();
-  if (searchText === "") {
-    alertMessege(`field is empty`)
-    event.target.reset()
-    return
+
+  clearGallery();
+
+  if (searchText === '') {
+    alertMessege(`field is empty`);
+    event.target.reset();
+    return;
   }
 
   showLoader();
-  clearGallery();
-
   getImagesByQuery(searchText)
     .then(data => {
       if (data.length <= 0) {
