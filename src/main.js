@@ -1,36 +1,45 @@
-import axios from 'axios';
+import getImagesByQuery from './js/pixabay-api';
+import {
+  createGallery,
+  clearGallery,
+  showLoader,
+  hideLoader,
+} from './js/render-functions';
 
-const keyAPI = '55636858-c5012cce39e9f46aea8eda2c3';
-const params = {
-  key: keyAPI,
-  q: 'piece',
-  image_type: 'photo',
-  orientation: 'horizontal',
-  safesearch: true,
-  per_page: 9,
-};
+// Описаний у документації
+import SimpleLightbox from 'simplelightbox';
+import iziToast from 'izitoast';
+// Додатковий імпорт стилів
+import 'simplelightbox/dist/simple-lightbox.min.css';
+import 'izitoast/dist/css/iziToast.min.css';
 
-axios.defaults.baseURL = `https://pixabay.com/api/`;
+const form = document.querySelector('.form');
 
-const div = document.querySelector('ul');
-console.log(div);
+form.addEventListener('submit', handlerGallery);
 
-axios
-  .get(``, { params })
-  .then(response => {
-    // console.log(response.data.hits);
-   div.innerHTML = markUp(response.data.hits)
-  })
-  .catch(error => console.log(error));
+function handlerGallery(event) {
+  event.preventDefault();
+  const searchText = event.target.elements['search-text'].value.trim();
+  showLoader();
+  clearGallery();
 
-function markUp(arr) {
-  console.log(arr);
-
-  return arr
-    .map(({webformatURL}) => {
-      return`<li>
-        <img src=${webformatURL} alt="text"/>
-        </li>`;
+  getImagesByQuery(searchText)
+    .then(response => {
+      if (response.data.hits.length <= 0) {
+        iziToast.error({
+          message: `Sorry, there are no images matching your search query. Please try again!`,
+          position: "topLeft"
+        });
+      }
+      createGallery(response.data.hits);
+      let galleryViewer = new SimpleLightbox('.gallery-card a', {
+        captionsData: 'alt',
+        captionDelay: 250,
+      });
     })
-    .join('');
+    .catch(error => console.log(error))
+    .finally(() => {
+      hideLoader();
+      event.target.reset();
+    });
 }
